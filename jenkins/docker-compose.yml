@@ -1,5 +1,4 @@
 version: '3.1'
-
 services:
   jenkins:
     build:
@@ -37,25 +36,28 @@ services:
       - docker-cache:/var/lib/docker
 
   minio:
-    image: quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z
-    command:
+     image: quay.io/minio/minio:RELEASE.2025-02-03T21-03-04Z-cpuv1
+     
+     command:
       - server
       - /data
       - --console-address
       - ":9001"
-    ports:
+     ports:
       - 9000:9000
       - 9001:9001
-    networks:
+     networks:
       docker:
         aliases: 
           - minio
-    volumes:
+     volumes:
       - minio_data:/data
-    environment:
+     environment:
       - MINIO_ROOT_USER=root
       - MINIO_ROOT_PASSWORD=rootroot
       - MINIO_DEFAULT_BUCKETS=root
+      - MINIO_LICENSE="accepteyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhaWQiOjAsImNhcCI6MSwiZXhwIjoxLjc5MzU2NDExNTY1MDYxMDkyMmU5LCJmZWF0dXJlcyI6WyJPYmplY3RzIiwiVGFibGVzIl0sImdycCI6MCwiaWF0IjoxLjc4ODM4MDExNTY1MDYxMDkyMmU5LCJpc3MiOiJzdWJuZXRAbWluLmlvIiwibGlkIjoiNzEyOGZiNGItYWRhOS00MTUyLTgwZTgtMDI5NzU0YWQ0ZTBiIiwib3JnIjoiYXV0b25vbW8iLCJwbGFuIjoiRU5URVJQUklTRSIsInByb2R1Y3QiOiJBSVN0b3IiLCJyb3AiOjIsInN1YiI6ImF3c3J1c3NvbWFub0BnbWFpbC5jb20iLCJ0cmlhbCI6dHJ1ZSwidmVyIjoxfQ.A1q5PbmE3fmo1FGi1vfkME1BoX3uNsuHirpdbnrxQF4LXyCDgkWP8Ixq7NSNCRbIpJEXI2O9pNRv5zZ43VTah5MdpFja6c0f_tNK4MaSylKVYXgAG2MBXgy331S75vRo"
+
 
 networks:
   docker:
