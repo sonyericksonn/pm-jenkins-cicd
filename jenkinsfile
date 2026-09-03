@@ -1,20 +1,17 @@
 pipeline {
-  agent any
-  stages {
-    stage('init') {
-      agent {
-        docker {
-          image 'hashicorp/terraform:1.9.8'
-          args '--entrypoint=""'
+    agent any
+
+    stages {
+        stage('Init') {
+            agent {
+                docker {
+                    image 'hashicorp/terraform:1.9.8'
+                    args '-u root --entrypoint=""'
+                }
+            }
+            steps {
+                sh 'terraform init -no-color'
+            }
         }
-      }
-      steps {
-        dir('/home/russo/Lab/proxmox') {
-          sh '''
-            terraform init -no-color
-          '''
-        }
-      }
     }
-  }
 }
