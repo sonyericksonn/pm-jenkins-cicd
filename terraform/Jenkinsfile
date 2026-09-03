@@ -13,10 +13,7 @@ pipeline {
             steps {
                 dir('Lab/proxmox/terraform') {
                     sh '''
-                      docker run --rm \
-                      -v $(pwd):/workspace \
-                      -w /workspace \
-                      hashicorp/terraform:1.9.8 init -no-color
+                      terraform init -no-color
                     '''
                 }
             }
