@@ -12,8 +12,10 @@ pipeline {
         dir('/home/russo/Lab/proxmox') {
           sh '''
             terraform init -no-color
-        }  '''
-       
+          '''
+        }
+      }
     }
   }
 }
+
