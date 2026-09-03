@@ -3,11 +3,11 @@ pipeline {
   stages {
     stage('init') {
       agent {
-        docker { image 'hashicorp/terraform:1.9.8' }
+        docker {
+          image 'hashicorp/terraform:1.9.8'
           args '--entrypoint=""'
         }
       }
-
       steps {
         dir('/home/russo/Lab/proxmox') {
           sh '''
@@ -16,7 +16,5 @@ pipeline {
         }
       }
     }
+  }
 }
-
-
-
