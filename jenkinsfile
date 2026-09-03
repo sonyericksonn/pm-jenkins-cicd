@@ -10,7 +10,7 @@ pipeline {
                 }
             }
             steps {
-                dir('/home/russo/Lab/proxmox') {
+                dir('/home/russo/Lab/proxmox/terraform') {
                     sh '''
                       terraform init -no-color
                     '''
