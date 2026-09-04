@@ -1,23 +1,23 @@
 pipeline {
     agent any
 
+    environment {
+        AWS_ACCESS_KEY_ID     = credentials('minio-access-key-id')
+        AWS_SECRET_ACCESS_KEY = credentials('minio-secret-access-key')
+    }
+
     stages {
-        stage('init') {
-            agent {
-                docker {
-                    image 'hashicorp/terraform:1.9.8'
-                    args '-u 0:0 --entrypoint=""'
-                    
- 
-                }
-            }
+        stage('Init') {
             steps {
-                dir('~/Lab/proxmox/terraform') {
-                    sh '''
-                      terraform init -no-color
-                    '''
-                }
+                sh '''
+                    docker run --rm \
+                      -e AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
+                      -e AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
+                      -v "$(pwd)":/workspace \
+                      -w /workspace \
+                      hashicorp/terraform:1.9.8 init -no-color
+                '''
             }
-        } 
-    }  
+        }
+    }
 }

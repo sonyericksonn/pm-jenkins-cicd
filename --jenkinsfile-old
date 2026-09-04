@@ -1,0 +1,23 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('init') {
+            agent {
+                docker {
+                    image 'hashicorp/terraform:1.9.8'
+                    args '-u 0:0 --entrypoint=""'
+                    
+ 
+                }
+            }
+            steps {
+                dir('~/Lab/proxmox/terraform') {
+                    sh '''
+                      terraform init -no-color
+                    '''
+                }
+            }
+        } 
+    }  
+}
