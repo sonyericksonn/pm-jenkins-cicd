@@ -26,11 +26,11 @@ pipeline {
                 }
             }
         }
-    }
+    
 
 
 
-        stage('Plan') {
+       stage('Plan') {
             steps {
                 dir('terraform') {
                     sh '''
