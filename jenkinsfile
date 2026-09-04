@@ -11,7 +11,7 @@ pipeline {
     stages {
         stage('Init') {
             steps {
-                dir(terraform') {
+                dir('terraform') {
                     sh '''
                         docker run --rm \
                           -e AWS_ACCESS_KEY_ID \
