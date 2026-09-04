@@ -27,4 +27,47 @@ pipeline {
             }
         }
     }
+
+
+
+        stage('Plan') {
+            steps {
+                dir('terraform') {
+                    sh '''
+                        docker run --rm \
+                          -e AWS_ACCESS_KEY_ID \
+                          -e AWS_SECRET_ACCESS_KEY \
+                          -e PM_API_TOKEN_ID \
+                          -e PM_API_TOKEN_SECRET \
+                          -v "$(pwd)":/workspace \
+                          -w /workspace \
+                          hashicorp/terraform:1.9.8 plan -no-color
+                    '''
+                }
+            }
+        }
+
+        stage('Aprovacao Manual') {
+            steps {
+                input message: 'Deseja aplicar as alterações?', ok: 'Sim, aplicar'
+            }
+        }
+
+        stage('Apply') {
+            steps {
+                dir('terraform') {
+                    sh '''
+                        docker run --rm \
+                          -e AWS_ACCESS_KEY_ID \
+                          -e AWS_SECRET_ACCESS_KEY \
+                          -e PM_API_TOKEN_ID \
+                          -e PM_API_TOKEN_SECRET \
+                          -v "$(pwd)":/workspace \
+                          -w /workspace \
+                          hashicorp/terraform:1.9.8 apply -auto-approve -no-color
+                    '''
+                }
+            }
+        }
+    }
 }
