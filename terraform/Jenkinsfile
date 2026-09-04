@@ -1,5 +1,9 @@
 pipeline {
     agent any
+    environment {
+        AWS_ACCESS_KEY_ID     = 'SUA_ACCESS_KEY_MINIO'
+        AWS_SECRET_ACCESS_KEY = 'SUA_SECRET_KEY_MINIO'
+    }
     stages {
         stage('init') {
             agent {
@@ -11,9 +15,12 @@ pipeline {
                 }
             }
             steps {
-                dir('/home/russo/Lab/proxmox/terraform') {
+                dir('Lab/proxmox/terraform') {
                     sh '''
-                      terraform init -no-color
+                      docker run --rm \
+                      -v $(pwd):/workspace \
+                      -w /workspace \
+                      hashicorp/terraform:1.9.8 init -no-color
                     '''
                 }
             }
