@@ -26,19 +26,19 @@ pipeline {
                         '''
                     }
                 }
-            } // <- Esta chave do 'steps' estava faltando
+            }
         }   
         
         stage('Init') {
             agent {
                 docker {
                     image 'hashicorp/terraform:1.9.8'
-                    
+                    args '-u 0:0 --entrypoint=' // Remove o entrypoint padrão da imagem para permitir o cat do Jenkins
                 }
             }
             steps {
                 dir('terraform') {
-                    sh 'terraform init -no-color'
+                    sh 'terraform init -reconfigure -no-color'
                 }
             }
         }   
@@ -47,7 +47,7 @@ pipeline {
             agent {
                 docker {
                     image 'hashicorp/terraform:1.9.8'
-                    
+                    args '-u 0:0 --entrypoint='
                 }
             }
             steps {
@@ -61,6 +61,7 @@ pipeline {
             agent {
                 docker {
                     image 'hashicorp/terraform:1.9.8'
+                    args '-u 0:0 --entrypoint='
                 }
             }
             steps {
