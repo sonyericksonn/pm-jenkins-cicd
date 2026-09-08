@@ -7,7 +7,7 @@ pipeline {
         AWS_ACCESS_KEY_ID     = credentials('aws-access-key-id')
         AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
         JENKINS_PUB_KEY = credentials('jenkins-pub-key')
-        
+
     }
 
     stages {
@@ -17,7 +17,7 @@ pipeline {
                     sh '''
                         docker run --rm \
                           -e AWS_ACCESS_KEY_ID \
-                         -e AWS_SECRET_ACCESS_KEY \
+                          -e AWS_SECRET_ACCESS_KEY \
                           -e PM_API_TOKEN_ID \
                           -e PM_API_TOKEN_SECRET \
                           -v /home/russo/.ssh:/home/russo/.ssh:ro \
