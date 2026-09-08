@@ -78,9 +78,12 @@ pipeline {
             }
             steps {
                 dir('terraform') {
-                    sh '''
-                        terraform init -reconfigure -no-color
-                        terraform apply -auto-approve -no-color
+                    withCredentials([sshUserPrivateKey(credentialsId: 'jenkins-private-key', keyFileVariable: 'JENKINS_PRIVATE_KEY')]) {
+                        sh '''
+                            cp "$JENKINS_PRIVATE_KEY" id_rsa
+                            chmod 600 id_rsa
+                            terraform init -reconfigure -no-color
+                            terraform apply -auto-approve -no-color
                     '''
                 }
             }
