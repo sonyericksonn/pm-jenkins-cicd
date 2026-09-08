@@ -73,7 +73,7 @@ pipeline {
             agent {
                 docker {
                     image 'hashicorp/terraform:1.9.8'
-                    args '-u 0:0 --entrypoint='
+                    args '-u 0:0 --entrypoint= -v ${JENKINS_PRIVATE_KEY}:/workspace/terraform/id_rsa'
                 }
             }
             steps {
@@ -105,7 +105,7 @@ pipeline {
             }
             when {
                 expression { params.CREATE_OR_DESTROY == 'destroy' }
-                
+
             }
         }
     }
