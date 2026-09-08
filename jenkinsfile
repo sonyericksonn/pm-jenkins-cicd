@@ -11,7 +11,7 @@ pipeline {
     parameters {
         choice(
             name: CREATE_OR_DESTROY,
-            choices: ['Create', 'Destroy'], 
+            choices: ['create', 'destroy'], 
             description: 'Would you like to create or destroy the infrastructure?'
         ) 
        }
@@ -65,7 +65,7 @@ pipeline {
                 }
             }
             when {
-                expression { params.CREATE_OR_DESTROY == 'Create' }
+                expression { params.CREATE_OR_DESTROY == 'create' }
             }
         }
 
@@ -85,7 +85,7 @@ pipeline {
                 }
             }
             when {
-                expression { params.CREATE_OR_DESTROY == 'Create' }
+                expression { params.CREATE_OR_DESTROY == 'create' }
             }
         }
         stage('Destroy') {
@@ -104,7 +104,7 @@ pipeline {
                 }
             }
             when {
-                expression { params.CREATE_OR_DESTROY == 'Destroy' }
+                expression { params.CREATE_OR_DESTROY == 'destroy' }
             }
         }
     }
