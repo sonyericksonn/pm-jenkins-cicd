@@ -67,7 +67,7 @@ pipeline {
                           -e PM_API_TOKEN_ID \
                           -e PM_API_TOKEN_SECRET \
                           -v /home/russo/.ssh:/home/russo/.ssh:ro \
-                          -v "/var/jenkins_home/workspace/ks8 on-primesses/terraform:/workspace" \ 
+                          -v "/var/jenkins_home/workspace/ks8 on-primesses/terraform:/workspace" \
                           -v "$(pwd)":/workspace \
                           -w /workspace \
                           hashicorp/terraform:1.9.8 apply -auto-approve -no-color
