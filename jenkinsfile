@@ -32,13 +32,13 @@ pipeline {
         stage('Init') {
             agent {
                 docker {
-                    image 'hashicorp/terraform:1.9.8'
+                    image 'alpine'
                     args '-u 0:0 --entrypoint=' // Remove o entrypoint padrão da imagem para permitir o cat do Jenkins
                 }
             }
             steps {
                 dir('terraform') {
-                    sh 'terraform init -reconfigure -no-color'
+                    sh 'terraform init -no-color'
                 }
             }
         }   
