@@ -10,7 +10,7 @@ pipeline {
     }
     parameters {
         choice(
-            name: CREATE_OR_DESTROY,
+            name: 'CREATE_OR_DESTROY',
             choices: ['create', 'destroy'], 
             description: 'Would you like to create or destroy the infrastructure?'
         ) 
