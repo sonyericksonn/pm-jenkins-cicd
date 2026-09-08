@@ -44,5 +44,12 @@ pipeline {
                 input message: 'Deseja aplicar as alterações?', ok: 'Sim, aplicar'
             }
         }
+                }       
+            }   
+        }
     }
-}
+}      
+
+
+    
+
