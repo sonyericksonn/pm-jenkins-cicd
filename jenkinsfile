@@ -12,6 +12,24 @@ pipeline {
     }
 
     stages {
+        stage('Authentication') {
+            agent {
+                docker {
+                    image 'alpine'
+                 
+                }
+            }
+            steps {
+                dir('terraform') {
+                  sh '''
+                  cp "$JENKINS_PRIVATE_KEY" id_rsa
+                  echo "$JENKINS_PUB_KEY" > id_rsa.pub
+                  
+                 '''
+                }
+            }
+        }   
+        
         stage('Init') {
             agent {
                 docker {
@@ -31,10 +49,9 @@ pipeline {
         stage('Plan') {
             steps {
                 dir('terraform') {
-                    withCredentials([sshUserPrivateKey(credentialsId: 'jenkins-private-key', keyFileVariable: 'JENKINS_PRIVATE_KEY')]) {
+                    
                         sh '''
-                        cp "$JENKINS_PRIVATE_KEY" id_rsa
-                        echo "$JENKINS_PUB_KEY" > id_rsa.pub
+                        
                             terraform plan -no-color
                         '''
                     }
