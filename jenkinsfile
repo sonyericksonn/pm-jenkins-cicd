@@ -22,7 +22,7 @@ pipeline {
                         sh '''
                             cp "$JENKINS_PRIVATE_KEY" id_rsa
                             echo "$JENKINS_PUB_KEY" > id_rsa.pub
-                            
+                            chmod 600 id_rsa
                         '''
                     }
                 }
