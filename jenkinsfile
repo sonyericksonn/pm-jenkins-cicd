@@ -84,7 +84,9 @@ pipeline {
                             chmod 600 id_rsa
                             terraform init -reconfigure -no-color
                             terraform apply -auto-approve -no-color
+
                     '''
+                    }
                 }
             }
             when {
