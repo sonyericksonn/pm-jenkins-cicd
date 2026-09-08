@@ -105,6 +105,7 @@ pipeline {
             }
             when {
                 expression { params.CREATE_OR_DESTROY == 'destroy' }
+                
             }
         }
     }
