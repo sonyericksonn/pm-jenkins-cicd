@@ -13,7 +13,7 @@ pipeline {
         stage('Authentication') {
             agent {
                 docker {
-                    image 'alpine'
+                    image 'hashicorp/terraform:1.9.8'
                 }
             }
             steps {
