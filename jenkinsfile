@@ -38,18 +38,8 @@ pipeline {
                             terraform plan -no-color
                         '''
                     }
-
-        stage('Aprovacao Manual') {
-            steps {
-                input message: 'Deseja aplicar as alterações?', ok: 'Sim, aplicar'
+                }
             }
         }
-                }       
-            }   
-        }
     }
-}      
-
-
-    
-
+}   
