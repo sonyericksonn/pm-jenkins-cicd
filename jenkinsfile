@@ -9,8 +9,12 @@ pipeline {
         JENKINS_PUB_KEY       = credentials('jenkins-pub-key')
     }
     parameters {
-        choice(name: CREATE_OR_DESTROY, choices: ['Create', 'Destroy'], description: 'Would you like to create or destroy the infrastructure?')
-    }
+        choice(
+            name: CREATE_OR_DESTROY,
+            choices: ['Create', 'Destroy'], 
+            description: 'Would you like to create or destroy the infrastructure?'
+        ) 
+       }
     stages {
         stage('Authentication') {
             agent {
