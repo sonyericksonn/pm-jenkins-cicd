@@ -59,7 +59,7 @@ pipeline {
             steps {
                 dir('terraform') {
                     sh '''
-                        export TF_VAR_ssh_private_key="$(cat $JENKINS_KEY_FILE)"
+                        xport TF_VAR_ssh_private_key="\$(cat ${SSH_KEY_FILE})"
                         terraform init -reconfigure -no-color
                         terraform plan -no-color
                     '''
@@ -84,7 +84,7 @@ pipeline {
                             cp -f "$JENKINS_PRIVATE_KEY" id_rsa
                             chmod 600 id_rsa
                             test -s id_rsa && echo "Arquivo id_rsa gerado com sucesso." || exit 1
-                            export TF_VAR_ssh_private_key="$(cat $JENKINS_KEY_FILE)"
+                            export TF_VAR_ssh_private_key="$(cat ${SSH_KEY_FILE})"
                             terraform init -reconfigure -no-color
                             terraform apply -auto-approve -no-color
                      '''
