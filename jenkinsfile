@@ -91,15 +91,14 @@ pipeline {
             }
             when {
                 expression { params.CREATE_OR_DESTROY == 'create' }
-                
             }
             post {
-               always {
-                dir('terraform') {
-                     sh 'rm -f id_rsa'
-                }   
-            }   
-
+                always {
+                    dir('terraform') {
+                        sh 'rm -f id_rsa id_rsa'
+                    }
+                }
+            }
         }
         stage('Destroy') {
             agent {
