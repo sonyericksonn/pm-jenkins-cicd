@@ -31,7 +31,7 @@ resource "proxmox_vm_qemu" "workers" {
   network {
     id     = 0
     bridge = local.bridge.interface
-    model  = local.bridge.model  "cloud-init status --wait"
+    model  = local.bridge.model 
   }
 
   scsihw = local.scsihw
@@ -72,7 +72,7 @@ resource "proxmox_vm_qemu" "workers" {
     local.cdir,
     local.workers.network_last_octect + count.index
   )
-  
+
   
   provisioner "remote-exec" {
     inline = [
