@@ -13,8 +13,12 @@ resource "proxmox_vm_qemu" "masters" {
   clone              = local.template
   agent              = local.agent
 
-  cores   = local.masters.cores
-  sockets = local.masters.sockets
+  # Atualizado para evitar o warning "use cpu { cores = } instead"
+  cpu {
+    cores   = local.masters.cores
+    sockets = local.masters.sockets
+  }
+
   memory  = local.masters.memory
 
   ciuser  = local.cloud_init.user
@@ -31,7 +35,7 @@ resource "proxmox_vm_qemu" "masters" {
   network {
     id     = 0
     bridge = local.bridge.interface
-    model  = local.bridge.model
+    model  = local.bridge.model 
   }
 
   scsihw = local.scsihw
@@ -61,18 +65,17 @@ resource "proxmox_vm_qemu" "masters" {
 
   tags = local.masters.tags
 
+  # Bloco de conexão SSH corrigido
   connection {
     type        = "ssh"
     user        = local.cloud_init.user
     private_key = file("${path.module}/id_rsa")
-    host = self.ssh_host
-    timeout     = "5m"
-  } 
-
-    #    private_key = file("/home/russo/.ssh/id_rsa")
     host = cidrhost(
       local.cdir,
-      local.masters.network_last_octect + count.index)
+      local.masters.network_last_octect + count.index
+    )
+    timeout     = "5m"
+  }
   
   provisioner "remote-exec" {
     inline = [
@@ -81,5 +84,3 @@ resource "proxmox_vm_qemu" "masters" {
     ]
   }
 }
-
-

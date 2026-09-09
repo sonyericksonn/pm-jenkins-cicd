@@ -13,8 +13,12 @@ resource "proxmox_vm_qemu" "workers" {
   clone              = local.template
   agent              = local.agent
 
-  cores   = local.workers.cores
-  sockets = local.workers.sockets
+  # Atualizado para evitar o warning "use cpu { cores = } instead"
+  cpu {
+    cores   = local.workers.cores
+    sockets = local.workers.sockets
+  }
+
   memory  = local.workers.memory
 
   ciuser  = local.cloud_init.user
@@ -61,18 +65,17 @@ resource "proxmox_vm_qemu" "workers" {
 
   tags = local.workers.tags
 
+  # Bloco de conexão SSH corrigido
   connection {
     type        = "ssh"
     user        = local.cloud_init.user
     private_key = file("${path.module}/id_rsa")
-    host = self.ssh_host
+    host = cidrhost(
+      local.cdir,
+      local.workers.network_last_octect + count.index
+    )
     timeout     = "5m"
   }
-  host = cidrhost(
-    local.cdir,
-    local.workers.network_last_octect + count.index
-  )
-
   
   provisioner "remote-exec" {
     inline = [
@@ -81,4 +84,3 @@ resource "proxmox_vm_qemu" "workers" {
     ]
   }
 }
-
