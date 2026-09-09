@@ -64,7 +64,7 @@ resource "proxmox_vm_qemu" "workers" {
   connection {
     type        = "ssh"
     user        = local.cloud_init.user
-    private_key = file("id_rsa")
+    private_key = file("${path.module}/id_rsa")
 
     #    private_key = file("/home/russo/.ssh/id_rsa")
     host = cidrhost(
