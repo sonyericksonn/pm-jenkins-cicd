@@ -74,8 +74,7 @@ resource "proxmox_vm_qemu" "masters" {
       local.cdir,
       local.masters.network_last_octect + count.index
     )
-  }
-
+  
   provisioner "remote-exec" {
     inline = [
       "echo 'Conexão SSH estabelecida com sucesso!'",
