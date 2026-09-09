@@ -68,7 +68,7 @@ resource "proxmox_vm_qemu" "workers" {
     host = self.ssh_host
     timeout     = "5m"
   }
-  host = chdrhost(
+  host = cidrhost(
     local.cdir,
     local.workers.network_last_octect + count.index
   ) 
