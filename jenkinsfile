@@ -24,7 +24,7 @@ pipeline {
             }
             steps {
                 dir('terraform') {
-                    withCredentials([sshUserPrivateKey(credentialsId: 'jenkins-private-key', keyFileVariable: 'JENKINS_PRIVATE_KEY')]) {
+                    withCredentials([sshUserPrivateKey(credentialsId: 'jenkins-private-key', keyFileVariable: 'JENKINS_PRIVATE_KEY', 'SSH_KEY_FILE')]) {
                         sh '''
                             cp "$JENKINS_PRIVATE_KEY" id_rsa
                             echo "$JENKINS_PUB_KEY" > id_rsa.pub
@@ -79,7 +79,7 @@ pipeline {
             }
             steps {
                 dir('terraform') {
-                    withCredentials([sshUserPrivateKey(credentialsId: 'jenkins-private-key', keyFileVariable: 'JENKINS_PRIVATE_KEY')]) {
+                    withCredentials([sshUserPrivateKey(credentialsId: 'jenkins-private-key', keyFileVariable: 'JENKINS_PRIVATE_KEY', 'SSH_KEY_FILE')]) {
                         sh '''
                             cp -f "$JENKINS_PRIVATE_KEY" id_rsa
                             chmod 600 id_rsa
