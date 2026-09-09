@@ -67,7 +67,7 @@ resource "proxmox_vm_qemu" "masters" {
     private_key = file("${path.module}/id_rsa")
     host = self.ssh_host
     timeout     = "5m"
-  } )
+  } 
 
     #    private_key = file("/home/russo/.ssh/id_rsa")
     host = cidrhost(
