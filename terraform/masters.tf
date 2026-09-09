@@ -72,8 +72,7 @@ resource "proxmox_vm_qemu" "masters" {
     #    private_key = file("/home/russo/.ssh/id_rsa")
     host = cidrhost(
       local.cdir,
-      local.masters.network_last_octect + count.index
-    )
+      local.masters.network_last_octect + count.index)
   
   provisioner "remote-exec" {
     inline = [
@@ -82,4 +81,5 @@ resource "proxmox_vm_qemu" "masters" {
     ]
   }
 }
+
 
