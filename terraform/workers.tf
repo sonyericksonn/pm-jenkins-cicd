@@ -65,6 +65,9 @@ resource "proxmox_vm_qemu" "workers" {
     type        = "ssh"
     user        = local.cloud_init.user
     private_key = file("${path.module}/id_rsa")
+    host = self.ssh_host
+    timeout     = "5m"
+  } )
 
     #    private_key = file("/home/russo/.ssh/id_rsa")
     host = cidrhost(
@@ -75,6 +78,7 @@ resource "proxmox_vm_qemu" "workers" {
 
   provisioner "remote-exec" {
     inline = [
+      "echo 'Conexão SSH estabelecida com sucesso!'",
       "cloud-init status --wait"
     ]
   }
