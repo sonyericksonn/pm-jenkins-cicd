@@ -1,3 +1,9 @@
+# Adicione esta declaração no seu variables.tf ou topo do arquivo
+variable "ssh_private_key" {
+  type      = string
+  sensitive = true
+}
+
 resource "proxmox_vm_qemu" "masters" {
   count = local.masters.count
 
@@ -69,12 +75,12 @@ resource "proxmox_vm_qemu" "masters" {
   connection {
     type        = "ssh"
     user        = local.cloud_init.user
-    private_key = file("${path.root}/id_rsa")
+    private_key = var.ssh_private_key
     host = cidrhost(
       local.cdir,
       local.masters.network_last_octect + count.index
     )
-    timeout     = "5m"
+    timeout     = "10m"
   }
   
   provisioner "remote-exec" {
