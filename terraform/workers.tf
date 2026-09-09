@@ -81,3 +81,4 @@ resource "proxmox_vm_qemu" "workers" {
     ]
   }
 }
+
