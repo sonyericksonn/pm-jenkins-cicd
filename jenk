@@ -7,6 +7,7 @@ pipeline {
         AWS_ACCESS_KEY_ID     = credentials('aws-access-key-id')
         AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
         JENKINS_PUB_KEY       = credentials('jenkins-pub-key')
+        JENKINS_PRIVATE_KEY   = credentials('JENKINS_PRIVATE_KEY')
     }
     parameters {
         choice(
