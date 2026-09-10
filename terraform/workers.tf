@@ -80,7 +80,6 @@ resource "proxmox_vm_qemu" "workers" {
   
   provisioner "remote-exec" {
     inline = [
-      "echo 'Conexão SSH estabelecida com sucesso!'",
       "cloud-init status --wait"
     ]
   }
