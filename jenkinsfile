@@ -22,7 +22,7 @@ pipeline {
         }
       }
       steps {
-        dir('kubernetes/02_kubernetes_production_ready/terraform') {
+        dir('terraform') {
           withCredentials([sshUserPrivateKey(credentialsId: 'jenkins-priv-key', keyFileVariable: 'JENKINS_PRIV_KEY')]) {
             sh '''
               cp "$JENKINS_PRIV_KEY" id_rsa
@@ -40,7 +40,7 @@ pipeline {
         }
       }
       steps {
-        dir('kubernetes/02_kubernetes_production_ready/terraform') {
+        dir('terraform') {
           sh '''
             terraform init -no-color
           '''
@@ -55,7 +55,7 @@ pipeline {
         }
       }
       steps {
-        dir('kubernetes/02_kubernetes_production_ready/terraform') {
+        dir('terraform') {
           sh '''
             terraform plan -no-color
           '''
@@ -75,7 +75,7 @@ pipeline {
         }
       }
       steps {
-        dir('kubernetes/02_kubernetes_production_ready/terraform') {
+        dir('terraform') {
           sh '''
             terraform apply -no-color -auto-approve
           '''
