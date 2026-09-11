@@ -79,7 +79,10 @@ pipeline {
       }
       steps {
         dir('terraform') {
+
           sh '''
+            # Extrai a chave PUBLICA a partir da chave privada disponibilizada pelo Jenkins
+            export TF_VAR_ssh_public_key="\$(ssh-keygen -y -f \$JENKINS_PRIVATE_KEY)"
             terraform apply -no-color -auto-approve
           '''
         }
