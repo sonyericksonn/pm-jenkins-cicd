@@ -60,7 +60,7 @@ pipeline {
       steps {
         dir('terraform') {
           sh '''
-            terraform plan -no-color
+            terraform plan -var="ssh_private_key=$(cat ~/.ssh/id_rsa)" -no-color
           '''
         }
       }
