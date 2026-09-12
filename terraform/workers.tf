@@ -75,7 +75,7 @@ resource "proxmox_vm_qemu" "workers" {
       local.cdir,
       local.workers.network_last_octect + count.index
     )
-    timeout     = "5m"
+    timeout     = "10m"
   }
   
   provisioner "remote-exec" {

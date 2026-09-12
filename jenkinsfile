@@ -26,6 +26,7 @@ pipeline {
         dir('terraform') {
           withCredentials([sshUserPrivateKey(credentialsId: 'jenkins-private-key', keyFileVariable: 'JENKINS_PRIV_KEY')]) {
             sh '''
+              chmod 600 "$JENKINS_PRIV_KEY"
               cp "$JENKINS_PRIV_KEY" id_rsa
               echo "$JENKINS_PUB_KEY" > id_rsa.pub
             '''
