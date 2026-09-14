@@ -45,7 +45,7 @@ pipeline {
         dir('terraform') {
           sh '''
             
-            terraform init  -no-color
+            terraform init -reconfigure -no-color
             
           '''
         }
