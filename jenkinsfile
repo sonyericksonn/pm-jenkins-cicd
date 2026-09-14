@@ -1,10 +1,5 @@
 pipeline {
-  agent {
-    docker {
-      image 'hashicorp/terraform:1.9.8'
-      args '--entrypoint=""'
-    }
-  }
+  agent any
   environment {
     PM_API_TOKEN_ID     = credentials('pm-api-token-id')
     PM_API_TOKEN_SECRET = credentials('pm-api-token-secret')
@@ -20,20 +15,13 @@ pipeline {
     )
   }
   stages {
-    stage('authentication') {
-      steps {
-        dir('terraform') {
-          withCredentials([sshUserPrivateKey(credentialsId: 'jenkins-private-key', keyFileVariable: 'JENKINS_PRIV_KEY')]) {
-            sh '''
-              cp "$JENKINS_PRIV_KEY" id_rsa
-              chmod 600 id_rsa
-              echo "$JENKINS_PUB_KEY" > id_rsa.pub
-            '''
-          }
+    stage('init') {
+      agent {
+        docker {
+          image 'hashicorp/terraform:1.9.8'
+          args '--entrypoint=""'
         }
       }
-    }
-    stage('init') {
       steps {
         dir('terraform') {
           sh 'terraform init -reconfigure -no-color'
@@ -41,9 +29,22 @@ pipeline {
       }
     }
     stage('plan') {
+      agent {
+        docker {
+          image 'hashicorp/terraform:1.9.8'
+          args '--entrypoint=""'
+        }
+      }
       steps {
         dir('terraform') {
-          sh 'terraform plan -no-color'
+          withCredentials([sshUserPrivateKey(credentialsId: 'jenkins-private-key', keyFileVariable: 'JENKINS_PRIV_KEY')]) {
+            sh '''
+              cp "$JENKINS_PRIV_KEY" id_rsa
+              chmod 600 id_rsa
+              echo "$JENKINS_PUB_KEY" > id_rsa.pub
+              terraform plan -no-color
+            '''
+          }
         }
       }
       when {
@@ -51,9 +52,22 @@ pipeline {
       }
     }
     stage('apply') {
+      agent {
+        docker {
+          image 'hashicorp/terraform:1.9.8'
+          args '--entrypoint=""'
+        }
+      }
       steps {
         dir('terraform') {
-          sh 'terraform apply -no-color -auto-approve'
+          withCredentials([sshUserPrivateKey(credentialsId: 'jenkins-private-key', keyFileVariable: 'JENKINS_PRIV_KEY')]) {
+            sh '''
+              cp "$JENKINS_PRIV_KEY" id_rsa
+              chmod 600 id_rsa
+              echo "$JENKINS_PUB_KEY" > id_rsa.pub
+              terraform apply -no-color -auto-approve
+            '''
+          }
         }
       }
       when {
