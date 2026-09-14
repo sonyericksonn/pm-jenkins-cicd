@@ -1,12 +1,16 @@
 pipeline {
-  agent any
+  agent {
+    docker {
+      image 'hashicorp/terraform:1.9.8'
+      args '--entrypoint=""'
+    }
+  }
   environment {
-    PM_API_TOKEN_ID = credentials('pm-api-token-id')
+    PM_API_TOKEN_ID     = credentials('pm-api-token-id')
     PM_API_TOKEN_SECRET = credentials('pm-api-token-secret')
-    AWS_ACCESS_KEY_ID = credentials('aws-access-key-id')
+    AWS_ACCESS_KEY_ID   = credentials('aws-access-key-id')
     AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
-    JENKINS_PUB_KEY       = credentials('jenkins-pub-key')
-    
+    JENKINS_PUB_KEY     = credentials('jenkins-pub-key')
   }
   parameters {
     choice(
@@ -17,18 +21,12 @@ pipeline {
   }
   stages {
     stage('authentication') {
-      agent {
-        docker {
-          image 'alpine'
-        }
-      }
       steps {
         dir('terraform') {
           withCredentials([sshUserPrivateKey(credentialsId: 'jenkins-private-key', keyFileVariable: 'JENKINS_PRIV_KEY')]) {
             sh '''
-              chmod 600 "$JENKINS_PRIV_KEY"
               cp "$JENKINS_PRIV_KEY" id_rsa
-              echo id_rsa
+              chmod 600 id_rsa
               echo "$JENKINS_PUB_KEY" > id_rsa.pub
             '''
           }
@@ -36,62 +34,30 @@ pipeline {
       }
     }
     stage('init') {
-      agent {
-        docker {
-          image 'hashicorp/terraform:1.9.8'
-          args '--entrypoint=""'
-        }
-      }
       steps {
         dir('terraform') {
-          sh '''
-            
-            terraform init -reconfigure -no-color
-            
-          '''
+          sh 'terraform init -reconfigure -no-color'
         }
       }
     }
     stage('plan') {
-      agent {
-        docker {
-          image 'hashicorp/terraform:1.9.8'
-          args '--entrypoint=""'
-        }
-      }
       steps {
         dir('terraform') {
-          sh '''
-            terraform plan  -no-color
-          '''
+          sh 'terraform plan -no-color'
         }
       }
       when {
-        expression {
-          params.CREATE_OR_DESTROY == "Create"
-        }
+        expression { params.CREATE_OR_DESTROY == "Create" }
       }
     }
     stage('apply') {
-      agent {
-        docker {
-          image 'hashicorp/terraform:1.9.8'
-          args '--entrypoint=""'
-        }
-      }
       steps {
         dir('terraform') {
-
-          sh '''
-            
-            terraform apply -no-color -auto-approve
-          '''
+          sh 'terraform apply -no-color -auto-approve'
         }
       }
       when {
-        expression {
-          params.CREATE_OR_DESTROY == "Create"
-        }
+        expression { params.CREATE_OR_DESTROY == "Create" }
       }
     }
   }
