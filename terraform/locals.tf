@@ -1,6 +1,6 @@
 locals {
   agent        = 1
-  cdir         = "192.168.0.0/24"
+  cidr         = "192.168.0.0/24"
   onboot       = true
   proxmox_node = "eno"
   scsihw       = "virtio-scsi-pci"
