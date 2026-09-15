@@ -65,7 +65,6 @@ pipeline {
               cp "$JENKINS_PRIV_KEY" id_rsa
               chmod 600 id_rsa
               echo "$JENKINS_PUB_KEY" > id_rsa.pub
-              
               terraform apply -no-color -auto-approve
             '''
           }
