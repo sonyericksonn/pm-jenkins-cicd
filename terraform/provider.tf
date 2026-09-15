@@ -17,12 +17,13 @@ terraform {
       use_path_style              = true
     }
   }
-}
+
   provider "proxmox" {
     pm_api_url = "https://192.168.0.50:8006/api2/json"
     #  username = "root@pam"
     #  password = "proxmox1"
     pm_tls_insecure = true
+  } 
 }
  
 
