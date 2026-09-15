@@ -28,5 +28,7 @@ terraform {
 
 provider "proxmox" {
   pm_api_url      = "https://192.168.0.50:8006"
+  pm_user         = "root@pam"
+  pm_password     = "proxmox1"
   pm_tls_insecure = true
 }
