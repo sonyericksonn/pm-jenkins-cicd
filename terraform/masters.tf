@@ -1,4 +1,3 @@
-
 resource "proxmox_vm_qemu" "masters" {
   count = local.masters.count
 
@@ -11,26 +10,22 @@ resource "proxmox_vm_qemu" "masters" {
   )
 
   onboot = local.onboot
-  clone              = local.template
-  agent              = local.agent
+  clone  = local.template
+  agent  = local.agent
 
-  # Atualizado para evitar o warning "use cpu { cores = } instead"
-  cpu {
-    cores   = local.masters.cores
-    sockets = local.masters.sockets
-  }
-
-  memory = local.masters.memory
+  cores   = local.masters.cores
+  sockets = local.masters.sockets
+  memory  = local.masters.memory
 
   ciuser  = local.cloud_init.user
   sshkeys = local.cloud_init.ssh_public_key
   ipconfig0 = format(
     "ip=%s/24,gw=%s",
     cidrhost(
-      local.cdir,
+      local.cidr,
       local.masters.network_last_octect + count.index
     ),
-    cidrhost(local.cdir, 1)
+    cidrhost(local.cidr, 1)
   )
 
   network {
@@ -66,16 +61,14 @@ resource "proxmox_vm_qemu" "masters" {
 
   tags = local.masters.tags
 
-  # Bloco de conexão SSH corrigido
   connection {
     type        = "ssh"
     user        = local.cloud_init.user
     private_key = file("id_rsa")
     host = cidrhost(
-      local.cdir,
+      local.cidr,
       local.masters.network_last_octect + count.index
     )
-    timeout = "10m"
   }
 
   provisioner "remote-exec" {
