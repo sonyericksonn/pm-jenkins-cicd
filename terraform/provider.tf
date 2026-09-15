@@ -16,7 +16,6 @@ terraform {
     region                      = "us-east-1"
     endpoint                    = "http://172.18.0.3:9000" # ajuste conforme seu ambiente
     skip_credentials_validation = true
-    skip_metadata_check         = true
     skip_region_validation      = true
     force_path_style            = true
   }
