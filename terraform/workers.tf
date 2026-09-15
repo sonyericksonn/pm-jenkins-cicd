@@ -10,7 +10,7 @@ resource "proxmox_vm_qemu" "workers" {
     count.index
   )
 
-  start_at_node_boot = local.onboot
+  onboot = local.onboot
   clone              = local.template
   agent              = local.agent
 
