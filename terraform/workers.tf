@@ -20,7 +20,7 @@ resource "proxmox_vm_qemu" "workers" {
     sockets = local.workers.sockets
   }
 
-  memory  = local.workers.memory
+  memory = local.workers.memory
 
   ciuser  = local.cloud_init.user
   sshkeys = local.cloud_init.ssh_public_key
@@ -36,7 +36,7 @@ resource "proxmox_vm_qemu" "workers" {
   network {
     id     = 0
     bridge = local.bridge.interface
-    model  = local.bridge.model 
+    model  = local.bridge.model
   }
 
   scsihw = local.scsihw
@@ -70,14 +70,14 @@ resource "proxmox_vm_qemu" "workers" {
   connection {
     type        = "ssh"
     user        = local.cloud_init.user
-    private_key = file("${path.module}/id_rsa")
+    private_key = file("id_rsa")
     host = cidrhost(
       local.cdir,
       local.workers.network_last_octect + count.index
     )
-    timeout     = "10m"
+    timeout = "10m"
   }
-  
+
   provisioner "remote-exec" {
     inline = [
       "cloud-init status --wait"
