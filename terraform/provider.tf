@@ -9,10 +9,7 @@ terraform {
       bucket = "proxmox-state"
       key    = "terraform.tfstate"
       region = "placeholder"
-
-
-      endpoints = {
-        s3 = "http://172.18.0.3:9000"
+      endpoints = "http://172.18.0.3:9000"
       }
   
       skip_credentials_validation = true
