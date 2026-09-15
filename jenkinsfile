@@ -24,7 +24,7 @@ pipeline {
       }
       steps {
         dir('terraform') {
-          sh 'terraform init -upgrade -no-color'
+          sh 'terraform init -reconfigure -no-color'
         }
       }
     }
