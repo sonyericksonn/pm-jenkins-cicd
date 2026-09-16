@@ -8,33 +8,56 @@ pipeline {
         AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
         JENKINS_PUB_KEY       = credentials('jenkins-pub-key')
     }
+
     parameters {
         choice(
             name: 'CREATE_OR_DESTROY',
-            choices: ['create', 'destroy'], 
+            choices: ['create', 'destroy'],
             description: 'Would you like to create or destroy the infrastructure?'
-        ) 
-       }
+        )
+    }
+
     stages {
+
         stage('Authentication') {
             agent {
                 docker {
                     image 'alpine'
                 }
             }
+
             steps {
                 dir('terraform') {
-                    withCredentials([sshUserPrivateKey(credentialsId: 'jenkins-private-key', keyFileVariable: 'JENKINS_PRIVATE_KEY')]) {
+                    withCredentials([
+                        sshUserPrivateKey(
+                            credentialsId: 'jenkins-private-key',
+                            keyFileVariable: 'JENKINS_PRIVATE_KEY'
+                        )
+                    ]) {
                         sh '''
+                            set -e
+
+                            echo "Criando chave SSH..."
+
                             cp "$JENKINS_PRIVATE_KEY" id_rsa
+
                             echo "$JENKINS_PUB_KEY" > id_rsa.pub
+
                             chmod 600 id_rsa
+                            chmod 644 id_rsa.pub
+
+                            test -s id_rsa
+                            test -s id_rsa.pub
+
+                            echo "Chaves SSH criadas com sucesso."
+
+                            ls -l id_rsa id_rsa.pub
                         '''
                     }
                 }
             }
-        }   
-        
+        }
+
         stage('Init') {
             agent {
                 docker {
@@ -42,13 +65,30 @@ pipeline {
                     args '-u 0:0 --entrypoint=""'
                 }
             }
+
             steps {
                 dir('terraform') {
-                    sh 'terraform init -reconfigure -no-color'
+                    sh '''
+                        set -e
+
+                        echo "Verificando chave SSH..."
+
+                        test -s id_rsa || {
+                            echo "ERRO: id_rsa não encontrado!"
+                            exit 1
+                        }
+
+                        chmod 600 id_rsa
+
+                        echo "id_rsa encontrado:"
+                        ls -l id_rsa
+
+                        terraform init -reconfigure -no-color
+                    '''
                 }
             }
-        }   
-        
+        }
+
         stage('Plan') {
             agent {
                 docker {
@@ -56,17 +96,32 @@ pipeline {
                     args '-u 0:0 --entrypoint=""'
                 }
             }
+
             steps {
                 dir('terraform') {
                     sh '''
-                        export TF_VAR_ssh_private_key="\$(cat \$JENKINS_PRIVATE_KEY)"
+                        set -e
+
+                        echo "Verificando chave SSH..."
+
+                        test -s id_rsa || {
+                            echo "ERRO: id_rsa não encontrado!"
+                            exit 1
+                        }
+
+                        chmod 600 id_rsa
+
                         terraform init -reconfigure -no-color
+
                         terraform plan -no-color
                     '''
                 }
             }
+
             when {
-                expression { params.CREATE_OR_DESTROY == 'create' }
+                expression {
+                    params.CREATE_OR_DESTROY == 'create'
+                }
             }
         }
 
@@ -77,31 +132,40 @@ pipeline {
                     args '-u 0:0 --entrypoint=""'
                 }
             }
+
             steps {
                 dir('terraform') {
-                    withCredentials([sshUserPrivateKey(credentialsId: 'jenkins-private-key', keyFileVariable: 'JENKINS_PRIVATE_KEY')]) {
-                        sh '''
-                            cp -f "$JENKINS_PRIVATE_KEY" id_rsa
-                            chmod 600 id_rsa
-                            test -s id_rsa && echo "Arquivo id_rsa gerado com sucesso." || exit 1
-                            export TF_VAR_ssh_private_key="\$(cat \$JENKINS_PRIVATE_KEY)"
-                            terraform init -reconfigure -no-color
-                            terraform apply -auto-approve -no-color
-                     '''
-                    }
+                    sh '''
+                        set -e
+
+                        echo "Verificando chave SSH..."
+
+                        test -s id_rsa || {
+                            echo "ERRO: id_rsa não encontrado!"
+                            exit 1
+                        }
+
+                        chmod 600 id_rsa
+
+                        echo "Arquivo id_rsa disponível:"
+                        ls -l id_rsa
+
+                        terraform init -reconfigure -no-color
+
+                        terraform apply \
+                            -auto-approve \
+                            -no-color
+                    '''
                 }
             }
+
             when {
-                expression { params.CREATE_OR_DESTROY == 'create' }
-            }
-            post {
-                always {
-                    dir('terraform') {
-                        sh 'rm -f id_rsa id_rsa'
-                    }
+                expression {
+                    params.CREATE_OR_DESTROY == 'create'
                 }
             }
         }
+
         stage('Destroy') {
             agent {
                 docker {
@@ -109,28 +173,46 @@ pipeline {
                     args '-u 0:0 --entrypoint=""'
                 }
             }
+
             steps {
                 dir('terraform') {
                     sh '''
-                        
-                        cp "$JENKINS_PRIVATE_KEY" id_rsa                                        
+                        set -e
+
+                        echo "Verificando chave SSH..."
+
+                        test -s id_rsa || {
+                            echo "ERRO: id_rsa não encontrado!"
+                            exit 1
+                        }
+
                         chmod 600 id_rsa
+
                         terraform init -reconfigure -no-color
-                        terraform apply -destroy -auto-approve -no-color
+
+                        terraform apply \
+                            -destroy \
+                            -auto-approve \
+                            -no-color
                     '''
                 }
             }
-            when {
-                expression { params.CREATE_OR_DESTROY == 'destroy' }
 
+            when {
+                expression {
+                    params.CREATE_OR_DESTROY == 'destroy'
+                }
             }
         }
     }
+
     post {
         always {
             dir('terraform') {
-                sh 'rm -f id_rsa id_rsa.pub'
+                sh '''
+                    rm -f id_rsa id_rsa.pub
+                '''
             }
-        }   
+        }
     }
 }
