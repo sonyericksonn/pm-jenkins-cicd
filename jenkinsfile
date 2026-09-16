@@ -180,7 +180,7 @@ pipeline {
                         set -e
 
                         export ANSIBLE_ROLES_PATH="ANSIBLE_ROLES_PATH:/kubespray/roles"
-                        export ANSIBLE_HOST_KEY_CHECKING="false"
+                        export ANSIBLE_HOST_KEY_CHECKING="False"
 
                         echo "Verificando chave SSH..."
 
