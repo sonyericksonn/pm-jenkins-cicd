@@ -193,7 +193,7 @@ pipeline {
                         echo "Arquivo id_rsa disponível:"
                         ls -l id_rsa
 
-                        ansible-playbook -i \
+                        ansible-playbook \
                             --become \
                             --inventory inventory.ini \
                             --extras-vars "kube_network_plugin=flannel" \
