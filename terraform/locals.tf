@@ -65,7 +65,7 @@ locals {
 
   # worker specific configuration
   workers = {
-    count = 1
+    count = 2
 
     name_prefix = "k8s-worker"
     vmid_prefix = 400
